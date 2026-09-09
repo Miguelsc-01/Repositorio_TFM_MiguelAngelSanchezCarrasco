@@ -1,0 +1,49 @@
+# Configuración del sistema: log-mel de alta resolución, multi-dataset y aumentos con mezcla de ruido
+
+seed: 42
+
+audio:
+  sample_rate: 32000  # Captura hasta 16 kHz -> cubre drones agudos
+  segment_seconds: 1.0
+  mono: true
+
+features:
+  type: logmel  # log-mel espectrograma
+  n_mels: 128
+  n_fft: 1024
+  hop_length: 512
+  fmin: 50
+  fmax: 16000
+  n_mfcc: 40  # Ignorado con logmel
+  deltas: false
+
+dataset:
+  drone_dirs:
+    - data/raw/DroneAudioDataset/Binary_Drone_Audio/yes_drone
+    - data/raw/geronimobasso/1
+    - data/raw/DroneAudioset/drone
+    - data/raw/DroneAudioset/drone_source
+  noise_dirs:
+    - data/raw/DroneAudioDataset/Binary_Drone_Audio/unknown
+    - data/raw/geronimobasso/0
+    - data/raw/ESC-50/audio
+  processed_dir: data/processed
+  max_noise_pool: 3000
+  max_drone: 20000
+  max_noise: 20000
+  min_seconds: 0.25
+
+augment:
+  enable: true
+  noise_mix_prob: 0.7 # Probabilidad de mezclar ruido en un clip de dron
+  snr_db_range: [-5, 20]  # SNR de la mezcla (dB): -5 = ruido muy fuerte
+  pitch_shift_prob: 0.2 # Pitch/stretch con probabilidad moderada
+  pitch_steps_range: [-3, 3]
+  time_stretch_prob: 0.15
+  time_stretch_range: [0.9, 1.1]
+  spec_augment: true
+
+split:
+  val_size: 0.15
+  test_size: 0.15
+  stratify: true
